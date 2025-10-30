@@ -1,0 +1,101 @@
+
+import java.util.*;
+
+/**
+ * Implementation of Breadth-First Search to build paths
+ * from graph of cities.
+ *
+ * It was given with a start and finish city, finding the
+ * shortest path using BFS algorithm and return list of
+ * cities from start to finish.
+ *
+ * @author Ethan Chang
+ */
+public class BFS {
+
+    /**
+     * Gets the shortest path between two cities by utilizing
+     * Breadth-First Search. It begins from start city and
+     * checks neighbor list in ascending alphabetical order.
+     * Finally, it returns shortest path.
+     *
+     * @param start start city of graph map
+     * @param finish goal city of graph map
+     * @return list of City representing path from start to finish or empty list if no path found
+     */
+    public static List<City> bfs(City start, City finish) {
+
+        Queue<City> queueCity = new LinkedList<>();
+        Map<City, City> predecessors = new HashMap<>();
+
+        queueCity.add(start);
+        predecessors.put(start, start);
+
+        while (!queueCity.isEmpty()) {
+
+            City current = queueCity.remove();
+
+            if (current.equals(finish)) {
+
+                break;
+
+            }
+
+            List<City> neighbors = current.getNeighbors();
+
+
+            // Sort neighbors in ascending alphabetical order with city's name.
+            // Keeps BFS path consistent and simple to match results.
+            Collections.sort(neighbors, new Comparator<City>() {
+                @Override
+                public int compare(final City city1, final City city2) {
+
+                    return city1.getCity().compareTo(city2.getCity());
+
+                }
+
+            });
+
+            if (neighbors != null) {
+
+                for (City neighbor : neighbors) {
+
+                    if (!predecessors.containsKey(neighbor)) {
+
+                        predecessors.put(neighbor, current);
+                        queueCity.add(neighbor);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        List<City> cityPath = new LinkedList<>();
+
+        if (predecessors.containsKey(finish)) {
+
+            City cityCurrent = finish;
+
+            while (cityCurrent != start) {
+
+                cityPath.add(0, cityCurrent);
+                cityCurrent = predecessors.get(cityCurrent);
+
+            }
+
+            cityPath.add(0, start);
+
+        } else {
+
+            return new ArrayList<>();
+
+        }
+
+        return cityPath;
+
+    }
+
+}
